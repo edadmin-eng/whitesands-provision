@@ -588,7 +588,7 @@ function render(tab){
   grid.innerHTML = PRODUCTS[tab].map((p,i)=>`
     <div class="card reveal in" style="transition-delay:${i*60}ms">
       <div class="card-img">
-        <img src="${p.photo ? p.photo : `https://loremflickr.com/600/580/${p.img}?lock=${p.lock}`}" alt="${p.name}" loading="lazy" onerror="this.remove()">
+        <img src="${imgSrc(p)}" alt="${p.name}" loading="lazy" onerror="this.remove()">
         ${p.pts?`<span class="badge-pts">${p.pts} Points</span>`:''}
         ${p.was?`<span class="badge-deal">Save ${Math.round((1-p.now/p.was)*100)}%</span>`:''}
       </div>
@@ -656,9 +656,97 @@ const io = new IntersectionObserver(entries=>{
 },{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
+/* ---------- PLACEHOLDER BOTTLE ART ----------
+   Drawn inline as SVG so it renders instantly with no network
+   request. Any product with its own `photo` uses that instead. */
+const PALETTE = {
+  red:       {glass:'#4a1220', liquid:'#631826', cap:'#b8933d', bg1:'#f3e7d8', bg2:'#e4d1ba'},
+  white:     {glass:'#77804f', liquid:'#95a066', cap:'#c9b47a', bg1:'#f6f1e2', bg2:'#e6dec6'},
+  rose:      {glass:'#c2807f', liquid:'#d79f9e', cap:'#c9a06a', bg1:'#f9ece9', bg2:'#eed6d1'},
+  sparkling: {glass:'#2c3d30', liquid:'#3c5240', cap:'#d9bc6f', bg1:'#f2efe0', bg2:'#e0dbc3'},
+  whisky:    {glass:'#8a5a24', liquid:'#a86d27', cap:'#332514', bg1:'#f4ead9', bg2:'#e5d3b7'},
+  rum:       {glass:'#67380f', liquid:'#82471b', cap:'#2b1a0d', bg1:'#f2e6d5', bg2:'#e0cbaf'},
+  cognac:    {glass:'#7a4418', liquid:'#96561f', cap:'#b8933d', bg1:'#f5e9d6', bg2:'#e7d1b1'},
+  tequila:   {glass:'#b0a065', liquid:'#c7b67c', cap:'#75663a', bg1:'#f7f2e2', bg2:'#e8e1c5'}
+};
+
+function bottleKind(){
+  // Reads every hint available — tag keywords, product name, region —
+  // so varietals pick the right glass colour and bottle shape.
+  const t = [...arguments].filter(Boolean).join(' ').toLowerCase();
+  // Spirits first. Cognac before sparkling — "Grande Champagne" is a
+  // cognac region, not a sparkling wine.
+  if(/cognac|brandy|armagnac|\bxo\b/.test(t))                            return 'cognac';
+  if(/whisk|single malt|scotch|islay|speyside|bourbon/.test(t))          return 'whisky';
+  if(/\brum\b|solera/.test(t))                                           return 'rum';
+  if(/tequila|agave|mezcal|reposado/.test(t))                            return 'tequila';
+  if(/champagne|sparkling|prosecco|cr[ée]mant|brut|cava/.test(t))        return 'sparkling';
+  // Word-bounded so estate names like "Belrose" aren't read as rosé.
+  if(/\bros[ée]\b|provence|coteaux/.test(t))                             return 'rose';
+  // Red varietals are checked before white: "Cabernet Sauvignon" is a red,
+  // and would otherwise be caught by the "sauvignon" rule below.
+  if(/cabernet|merlot|malbec|pinot noir|syrah|shiraz|tempranillo|sangiovese|nebbiolo|rosso|rouge|barolo|chianti|rioja|amarone|appassimento|\bred\b/.test(t)) return 'red';
+  if(/white|blanc|chardonnay|sauvignon|riesling|albari|erbaluce|m[âa]con|chablis|pinot gris|vin de/.test(t)) return 'white';
+  return 'red';
+}
+
+function bottleArt(tags, name, region){
+  const kind = bottleKind(tags, name, region);
+  const c = PALETTE[kind];
+  const squat = (kind === 'whisky' || kind === 'rum' || kind === 'cognac' || kind === 'tequila');
+  const wide  = (kind === 'sparkling');
+
+  const cx = 300;
+  const nw = (squat ? 26 : 17);                 // neck half-width
+  const bw = (squat ? 96 : wide ? 84 : 70);     // body half-width
+  const sy = (squat ? 235 : wide ? 195 : 205);  // shoulder start
+  const topY = squat ? 150 : 72;                // neck top
+  const capH = squat ? 26 : 30;
+
+  const body = `M${cx-nw} ${topY} L${cx-nw} ${sy}
+    C${cx-nw} ${sy+34},${cx-bw} ${sy+18},${cx-bw} ${sy+76}
+    L${cx-bw} 528 Q${cx-bw} 540,${cx-bw+12} 540
+    L${cx+bw-12} 540 Q${cx+bw} 540,${cx+bw} 528
+    L${cx+bw} ${sy+76}
+    C${cx+bw} ${sy+18},${cx+nw} ${sy+34},${cx+nw} ${sy}
+    L${cx+nw} ${topY} Z`;
+
+  const labelY = squat ? 380 : 360;
+  const labelH = squat ? 108 : 124;
+  const foil = wide
+    ? `<rect x="${cx-nw-4}" y="${topY}" width="${(nw+4)*2}" height="86" fill="${c.cap}" opacity=".9"/>`
+    : '';
+
+  const svg =
+`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 580">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" stop-color="${c.bg1}"/><stop offset="1" stop-color="${c.bg2}"/>
+</linearGradient>
+<linearGradient id="gl" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="${c.glass}"/><stop offset=".38" stop-color="${c.liquid}"/>
+<stop offset=".62" stop-color="${c.glass}"/><stop offset="1" stop-color="${c.glass}"/>
+</linearGradient>
+</defs>
+<rect width="600" height="580" fill="url(#bg)"/>
+<circle cx="168" cy="150" r="200" fill="#ffffff" opacity=".26"/>
+<ellipse cx="300" cy="545" rx="${bw+34}" ry="17" fill="#000000" opacity=".11"/>
+<path d="${body}" fill="url(#gl)"/>
+<rect x="${cx-nw-3}" y="${topY-capH}" width="${(nw+3)*2}" height="${capH+8}" rx="2" fill="${c.cap}"/>
+${foil}
+<rect x="${cx-bw+13}" y="${labelY}" width="${(bw-13)*2}" height="${labelH}" rx="2" fill="#f7f1e4" opacity=".95"/>
+<rect x="${cx-bw+13}" y="${labelY}" width="${(bw-13)*2}" height="5" fill="${c.cap}"/>
+<rect x="${cx-30}" y="${labelY+30}" width="60" height="3" fill="${c.glass}" opacity=".55"/>
+<rect x="${cx-44}" y="${labelY+48}" width="88" height="3" fill="${c.glass}" opacity=".32"/>
+<rect x="${cx-24}" y="${labelY+66}" width="48" height="3" fill="${c.glass}" opacity=".32"/>
+<path d="M${cx-bw+20} ${sy+96} L${cx-bw+20} 516" stroke="#ffffff" stroke-opacity=".2" stroke-width="11" stroke-linecap="round"/>
+</svg>`;
+
+  return 'data:image/svg+xml,' + encodeURIComponent(svg.replace(/\s+/g,' '));
+}
+
 /* ---------- APPLY EDITABLE CONTENT ---------- */
-const imgSrc = (o, w, h) => o.photo ? o.photo
-  : `https://loremflickr.com/${w}/${h}/${o.img || 'wine'}?lock=${o.lock || 1}`;
+const imgSrc = (o) => o.photo ? o.photo : bottleArt(o.img, o.name, o.region);
 
 function applyContent(){
   // announcement bar
@@ -685,7 +773,7 @@ function applyContent(){
       <div class="fav reveal in">
         <div class="fav-img">
           <div class="fav-num">${i+1}</div>
-          <img src="${imgSrc(f,600,400)}" alt="${f.name}" loading="lazy" onerror="this.remove()">
+          <img src="${imgSrc(f)}" alt="${f.name}" loading="lazy" onerror="this.remove()">
         </div>
         <div class="fav-body">
           <div class="fav-quote">${f.quote}</div>
