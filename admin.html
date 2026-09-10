@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>White Sands Provision — Content Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --wine:#6e1423; --wine-dark:#4a0d18; --wine-deep:#2b070e;
+  --gold:#b8933d; --gold-light:#d9bc6f;
+  --ink:#1d1a17; --ink-soft:#57504a;
+  --paper:#fdfcfa; --paper-warm:#f7f3ec; --line:#e6dfd4;
+  --ok:#2e7d4f; --warn:#b3541e;
+  --serif:'Libre Caslon Text',Georgia,serif; --sans:'Work Sans',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--paper-warm);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+button{font-family:var(--sans);cursor:pointer}
+input,textarea{font-family:var(--sans)}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;background:var(--wine-deep);color:#f2e9da;padding:14px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;box-shadow:0 2px 16px rgba(0,0,0,.2)}
+.topbar .brand{font-family:var(--serif);font-size:1.15rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-light)}
+.topbar .brand small{display:block;font-family:var(--sans);font-size:.58rem;letter-spacing:.4em;color:var(--gold)}
+.topbar .spacer{flex:1}
+.tb-btn{border:1px solid rgba(217,188,111,.5);background:transparent;color:#f2e9da;padding:10px 20px;font-size:.74rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;transition:all .25s;border-radius:2px}
+.tb-btn:hover{border-color:var(--gold-light);color:var(--gold-light)}
+.tb-btn.primary{background:var(--gold);border-color:var(--gold);color:var(--wine-deep)}
+.tb-btn.primary:hover{background:var(--gold-light);color:var(--wine-deep)}
+.saved-dot{font-size:.72rem;color:#a8967a;letter-spacing:.06em}
+
+/* GUIDE */
+.guide{background:#fff;border-bottom:1px solid var(--line);padding:20px 26px}
+.guide-inner{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step .n{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--wine);color:#fff;font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step p{font-size:.84rem;color:var(--ink-soft)}
+.step b{color:var(--ink);display:block;font-size:.86rem}
+
+/* LAYOUT */
+.wrap{max-width:1180px;margin:0 auto;padding:28px 26px 90px}
+.panel{background:#fff;border:1px solid var(--line);margin-bottom:26px}
+.panel-head{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;background:var(--paper)}
+.panel-head h2{font-family:var(--serif);font-weight:400;font-size:1.25rem}
+.panel-head .hint{font-size:.78rem;color:var(--ink-soft);margin-left:auto}
+.panel-body{padding:24px}
+
+/* FIELDS */
+.field{margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+label{display:block;font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
+input[type=text],input[type=number],textarea{width:100%;border:1px solid var(--line);background:var(--paper);padding:10px 13px;font-size:.9rem;border-radius:2px;outline:none;transition:border-color .2s;color:var(--ink)}
+input:focus,textarea:focus{border-color:var(--gold)}
+textarea{resize:vertical;min-height:64px;line-height:1.55}
+.row{display:grid;gap:14px}
+.row-2{grid-template-columns:1fr 1fr}
+.row-3{grid-template-columns:1fr 1fr 1fr}
+
+/* TABS */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--paper)}
+.tab{background:none;border:1px solid var(--line);padding:9px 18px;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);border-radius:2px;transition:all .2s}
+.tab:hover{border-color:var(--wine);color:var(--wine)}
+.tab.active{background:var(--wine);border-color:var(--wine);color:#fff}
+.tab .cnt{opacity:.65;margin-left:6px}
+
+/* ITEM CARD */
+.item{border:1px solid var(--line);margin-bottom:18px;background:var(--paper)}
+.item-head{display:flex;align-items:center;gap:14px;padding:12px 16px;background:#fff;border-bottom:1px solid var(--line)}
+.item-head .idx{font-family:var(--serif);font-size:1.05rem;color:var(--wine);min-width:24px}
+.item-head .ttl{font-weight:600;font-size:.9rem;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini{background:none;border:1px solid var(--line);width:30px;height:30px;font-size:.9rem;color:var(--ink-soft);border-radius:2px;transition:all .2s;line-height:1}
+.mini:hover{border-color:var(--wine);color:var(--wine)}
+.mini.danger:hover{border-color:#b3261e;color:#b3261e}
+.item-body{padding:18px;display:grid;grid-template-columns:190px 1fr;gap:20px}
+
+/* PHOTO DROP */
+.photo{border:2px dashed var(--line);background:#fff;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:12px;cursor:pointer;position:relative;overflow:hidden;transition:all .25s;border-radius:2px}
+.photo:hover,.photo.over{border-color:var(--gold);background:#fffdf7}
+.photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.photo .ph-ico{font-size:1.7rem;color:var(--gold)}
+.photo .ph-txt{font-size:.74rem;color:var(--ink-soft);line-height:1.4}
+.photo .badge{position:absolute;bottom:0;left:0;right:0;background:rgba(43,7,14,.86);color:#f0e5d2;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:6px;text-align:center}
+.photo-actions{display:flex;gap:6px;margin-top:8px}
+.photo-actions button{flex:1;background:none;border:1px solid var(--line);padding:6px;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);border-radius:2px}
+.photo-actions button:hover{border-color:var(--wine);color:var(--wine)}
+
+.add-item{width:100%;border:2px dashed var(--line);background:#fff;padding:18px;font-size:.76rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);transition:all .25s;border-radius:2px}
+.add-item:hover{border-color:var(--gold);color:var(--wine);background:#fffdf7}
+
+/* TOAST */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(140px);background:var(--wine-deep);color:#f3ead9;padding:15px 30px;font-size:.86rem;z-index:5000;border-left:3px solid var(--gold);box-shadow:0 16px 44px rgba(0,0,0,.3);opacity:0;transition:all .4s cubic-bezier(.2,.9,.3,1.2)}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* SAVEBAR */
+.savebar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:14px 26px;display:flex;align-items:center;gap:16px;box-shadow:0 -4px 20px rgba(43,7,14,.07);z-index:90}
+.savebar .info{font-size:.8rem;color:var(--ink-soft);flex:1}
+.savebar .info b{color:var(--wine)}
+.btn-dl{background:var(--wine);color:#fff;border:none;padding:13px 30px;font-size:.76rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;border-radius:2px;transition:background .25s}
+.btn-dl:hover{background:var(--wine-dark)}
+.btn-prev{background:none;border:1px solid var(--line);color:var(--ink);padding:13px 24px;font-size:.76rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;border-radius:2px;text-decoration:none}
+.btn-prev:hover{border-color:var(--wine);color:var(--wine)}
+
+@media (max-width:760px){
+  .item-body{grid-template-columns:1fr}
+  .row-2,.row-3{grid-template-columns:1fr}
+  .savebar{flex-wrap:wrap}
+  .savebar .info{flex-basis:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">White Sands <small>Content Editor</small></div>
+  <div class="spacer"></div>
+  <span class="saved-dot" id="savedDot">Auto-saved</span>
+  <button class="tb-btn" onclick="resetAll()">Reset</button>
+  <button class="tb-btn primary" onclick="downloadFile()">Download products.js</button>
+</div>
+
+<div class="guide">
+  <div class="guide-inner">
+    <div class="step"><div class="n">1</div><p><b>Mag-edit dito</b>Palitan ang text at presyo. Auto-save sa browser habang nagta-type ka.</p></div>
+    <div class="step"><div class="n">2</div><p><b>Mag-upload ng litrato</b>I-click o i-drag ang photo sa kahon. Auto-resize na.</p></div>
+    <div class="step"><div class="n">3</div><p><b>I-download</b>Pindutin ang "Download products.js" sa itaas.</p></div>
+    <div class="step"><div class="n">4</div><p><b>I-replace ang file</b>Ilipat ang na-download sa <code>whitesands-provision</code> folder. Tapos na!</p></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- SITE TEXT -->
+  <div class="panel">
+    <div class="panel-head"><h2>Banner &amp; Hero</h2><span class="hint">Nasa pinakataas ng website</span></div>
+    <div class="panel-body">
+      <div class="row row-2">
+        <div class="field"><label>Announcement bar</label><input type="text" data-bind="announce.text"></div>
+        <div class="field"><label>Announcement link text</label><input type="text" data-bind="announce.linkText"></div>
+      </div>
+      <hr style="border:none;border-top:1px solid var(--line);margin:20px 0">
+      <div class="item-body" style="padding:0">
+        <div>
+          <div class="photo" id="heroPhoto"><div class="ph-ico">⬆</div><div class="ph-txt">Hero background<br>Pinakamalaking litrato</div></div>
+          <div class="photo-actions"><button onclick="clearPhoto('hero')">Alisin</button></div>
+        </div>
+        <div>
+          <div class="field"><label>Eyebrow (maliit na text sa taas)</label><input type="text" data-bind="hero.eyebrow"></div>
+          <div class="row row-2">
+            <div class="field"><label>Headline</label><input type="text" data-bind="hero.title"></div>
+            <div class="field"><label>Headline (gold italic part)</label><input type="text" data-bind="hero.titleEm"></div>
+          </div>
+          <div class="field"><label>Sub-headline</label><textarea data-bind="hero.sub"></textarea></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAVORITES -->
+  <div class="panel">
+    <div class="panel-head"><h2>Member Favorites</h2><span class="hint">Ang numbered carousel</span></div>
+    <div class="panel-body"><div id="favList"></div><button class="add-item" onclick="addFav()">+ Magdagdag ng favorite</button></div>
+  </div>
+
+  <!-- PRODUCTS -->
+  <div class="panel">
+    <div class="panel-head"><h2>Products</h2><span class="hint">Ang shop grid</span></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="panel-body"><div id="prodList"></div><button class="add-item" onclick="addProduct()">+ Magdagdag ng produkto</button></div>
+  </div>
+
+</div>
+
+<div class="savebar">
+  <div class="info" id="barInfo"></div>
+  <a class="btn-prev" href="index.html" target="_blank">Preview site ↗</a>
+  <button class="btn-dl" onclick="downloadFile()">Download products.js</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="products.js"></script>
+<script>
+const TABS = [
+  {k:'popular', label:'Most Popular'},
+  {k:'offers',  label:'Limited Offers'},
+  {k:'expert',  label:'Expert Picks'},
+  {k:'last',    label:'Last Chance'}
+];
+const KEY = 'wsp_site_data_v1';
+const DEFAULTS = JSON.parse(JSON.stringify(window.SITE_DATA));
+
+let D = load();
+let tab = 'popular';
+
+function load(){
+  try{
+    const s = localStorage.getItem(KEY);
+    if(s) return JSON.parse(s);
+  }catch(e){}
+  return JSON.parse(JSON.stringify(window.SITE_DATA));
+}
+function save(){
+  try{
+    localStorage.setItem(KEY, JSON.stringify(D));
+    flashSaved();
+  }catch(e){
+    toast('Masyadong marami ang litrato para sa browser storage — i-download na ang file.');
+  }
+}
+let savedTimer;
+function flashSaved(){
+  const d = document.getElementById('savedDot');
+  d.textContent = 'Saved ✓'; d.style.color = '#9fd8b4';
+  clearTimeout(savedTimer);
+  savedTimer = setTimeout(()=>{ d.textContent='Auto-saved'; d.style.color='#a8967a'; }, 1400);
+}
+
+/* ---------- BIND SIMPLE FIELDS ---------- */
+function getPath(o,p){ return p.split('.').reduce((a,k)=>a&&a[k], o); }
+function setPath(o,p,v){
+  const ks = p.split('.'); const last = ks.pop();
+  ks.reduce((a,k)=>a[k]=a[k]||{}, o)[last] = v;
+}
+function bindFields(){
+  document.querySelectorAll('[data-bind]').forEach(el=>{
+    const p = el.dataset.bind;
+    el.value = getPath(D,p) ?? '';
+    el.oninput = ()=>{ setPath(D,p,el.value); save(); };
+  });
+}
+
+/* ---------- IMAGE HANDLING ---------- */
+function resizeToDataURL(file, maxW, cb){
+  const fr = new FileReader();
+  fr.onload = e=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const scale = Math.min(1, maxW / img.width);
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width*scale);
+      c.height = Math.round(img.height*scale);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      cb(c.toDataURL('image/jpeg', 0.82));
+    };
+    img.onerror = ()=> toast('Hindi mabasa ang file — subukan ang JPG o PNG.');
+    img.src = e.target.result;
+  };
+  fr.readAsDataURL(file);
+}
+
+function attachPhoto(el, getObj, maxW){
+  const paint = ()=>{
+    const o = getObj();
+    const src = o.photo || '';
+    el.innerHTML = src
+      ? `<img src="${src}" alt=""><div class="badge">Sarili mong litrato</div>`
+      : `<div class="ph-ico">⬆</div><div class="ph-txt">I-click o i-drag<br>ang litrato dito</div><div class="badge" style="background:rgba(90,80,70,.75)">Placeholder</div>`;
+  };
+  paint();
+  el.onclick = ()=>{
+    const inp = document.createElement('input');
+    inp.type='file'; inp.accept='image/*';
+    inp.onchange = ()=>{
+      if(!inp.files[0]) return;
+      resizeToDataURL(inp.files[0], maxW, url=>{
+        getObj().photo = url; paint(); save(); updateBar();
+        toast('Nailagay ang litrato.');
+      });
+    };
+    inp.click();
+  };
+  el.ondragover = e=>{ e.preventDefault(); el.classList.add('over'); };
+  el.ondragleave = ()=> el.classList.remove('over');
+  el.ondrop = e=>{
+    e.preventDefault(); el.classList.remove('over');
+    const f = e.dataTransfer.files[0];
+    if(f && f.type.startsWith('image/')){
+      resizeToDataURL(f, maxW, url=>{ getObj().photo=url; paint(); save(); updateBar(); toast('Nailagay ang litrato.'); });
+    }
+  };
+  el._paint = paint;
+}
+
+function clearPhoto(which, i){
+  if(which==='hero'){ D.hero.photo=''; document.getElementById('heroPhoto')._paint(); }
+  save(); updateBar();
+}
+
+/* ---------- FAVORITES ---------- */
+function renderFavs(){
+  const box = document.getElementById('favList');
+  box.innerHTML = D.favorites.map((f,i)=>`
+    <div class="item">
+      <div class="item-head">
+        <span class="idx">${i+1}</span>
+        <span class="ttl">${esc(f.name) || 'Bagong favorite'}</span>
+        <button class="mini" onclick="moveFav(${i},-1)" title="Itaas">↑</button>
+        <button class="mini" onclick="moveFav(${i},1)" title="Ibaba">↓</button>
+        <button class="mini danger" onclick="delFav(${i})" title="Burahin">✕</button>
+      </div>
+      <div class="item-body">
+        <div>
+          <div class="photo" id="favPhoto${i}"></div>
+          <div class="photo-actions"><button onclick="D.favorites[${i}].photo='';renderFavs();save()">Alisin</button></div>
+        </div>
+        <div>
+          <div class="field"><label>Quote / teaser</label><textarea oninput="D.favorites[${i}].quote=this.value;save()">${esc(f.quote)}</textarea></div>
+          <div class="field"><label>Pangalan &amp; rehiyon</label><input type="text" oninput="D.favorites[${i}].name=this.value;save();syncTitle(this)" value="${esc(f.name)}"></div>
+        </div>
+      </div>
+    </div>`).join('');
+  D.favorites.forEach((f,i)=>{
+    attachPhoto(document.getElementById('favPhoto'+i), ()=>D.favorites[i], 900);
+  });
+}
+function addFav(){ D.favorites.push({quote:'"Bagong quote dito"',name:'Pangalan ng bote · Rehiyon',photo:'',img:'wine',lock:Math.floor(Math.random()*900)}); renderFavs(); save(); updateBar(); }
+function delFav(i){ if(confirm('Burahin ang favorite na ito?')){ D.favorites.splice(i,1); renderFavs(); save(); updateBar(); } }
+function moveFav(i,d){ const j=i+d; if(j<0||j>=D.favorites.length) return; [D.favorites[i],D.favorites[j]]=[D.favorites[j],D.favorites[i]]; renderFavs(); save(); }
+
+/* ---------- PRODUCTS ---------- */
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = TABS.map(t=>
+    `<button class="tab ${t.k===tab?'active':''}" onclick="tab='${t.k}';renderTabs();renderProds()">${t.label}<span class="cnt">${D.products[t.k].length}</span></button>`
+  ).join('');
+}
+function renderProds(){
+  const list = D.products[tab];
+  document.getElementById('prodList').innerHTML = list.map((p,i)=>`
+    <div class="item">
+      <div class="item-head">
+        <span class="idx">${i+1}</span>
+        <span class="ttl">${esc(p.name) || 'Bagong produkto'}</span>
+        <button class="mini" onclick="moveProd(${i},-1)" title="Itaas">↑</button>
+        <button class="mini" onclick="moveProd(${i},1)" title="Ibaba">↓</button>
+        <button class="mini danger" onclick="delProd(${i})" title="Burahin">✕</button>
+      </div>
+      <div class="item-body">
+        <div>
+          <div class="photo" id="prodPhoto${i}"></div>
+          <div class="photo-actions"><button onclick="D.products['${tab}'][${i}].photo='';renderProds();save()">Alisin</button></div>
+        </div>
+        <div>
+          <div class="field"><label>Teaser (ang italic na headline)</label><textarea oninput="P(${i}).teaser=this.value;save()">${esc(p.teaser)}</textarea></div>
+          <div class="field"><label>Pangalan ng produkto</label><input type="text" oninput="P(${i}).name=this.value;save();syncTitle(this)" value="${esc(p.name)}"></div>
+          <div class="row row-2">
+            <div class="field"><label>Rehiyon / pinanggalingan</label><input type="text" oninput="P(${i}).region=this.value;save()" value="${esc(p.region)}"></div>
+            <div class="field"><label>Points badge (iwan blangko kung wala)</label><input type="number" min="80" max="100" oninput="P(${i}).pts=this.value?+this.value:null;save()" value="${p.pts??''}"></div>
+          </div>
+          <div class="row row-2">
+            <div class="field"><label>Dating presyo ₱ (blangko = walang sale)</label><input type="number" oninput="P(${i}).was=this.value?+this.value:null;save()" value="${p.was??''}"></div>
+            <div class="field"><label>Presyo ngayon ₱</label><input type="number" oninput="P(${i}).now=+this.value||0;save()" value="${p.now??''}"></div>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+  list.forEach((p,i)=>{
+    attachPhoto(document.getElementById('prodPhoto'+i), ()=>D.products[tab][i], 1000);
+  });
+}
+function P(i){ return D.products[tab][i]; }
+function addProduct(){
+  D.products[tab].push({teaser:'"Bagong teaser dito"',pts:null,name:'Bagong Produkto',region:'Rehiyon, Bansa',was:null,now:1000,photo:'',img:'wine',lock:Math.floor(Math.random()*900)});
+  renderTabs(); renderProds(); save(); updateBar();
+}
+function delProd(i){ if(confirm('Burahin ang produktong ito?')){ D.products[tab].splice(i,1); renderTabs(); renderProds(); save(); updateBar(); } }
+function moveProd(i,d){ const L=D.products[tab], j=i+d; if(j<0||j>=L.length) return; [L[i],L[j]]=[L[j],L[i]]; renderProds(); save(); }
+
+function syncTitle(inp){
+  const t = inp.closest('.item').querySelector('.ttl');
+  if(t) t.textContent = inp.value || 'Walang pangalan';
+}
+function esc(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ---------- STATS ---------- */
+function updateBar(){
+  const all = Object.values(D.products).flat();
+  const withPhoto = all.filter(p=>p.photo).length
+    + D.favorites.filter(f=>f.photo).length
+    + (D.hero.photo?1:0);
+  const total = all.length + D.favorites.length + 1;
+  const size = Math.round(JSON.stringify(D).length/1024);
+  document.getElementById('barInfo').innerHTML =
+    `<b>${all.length}</b> produkto · <b>${withPhoto}/${total}</b> may sariling litrato · file ≈ <b>${size} KB</b>`;
+}
+
+/* ---------- DOWNLOAD ---------- */
+function downloadFile(){
+  const header = `/* ============================================================
+   WHITE SANDS PROVISION — SITE CONTENT
+   Generated by admin.html on ${new Date().toLocaleString('en-PH')}
+   Ilagay ang file na ito sa whitesands-provision folder,
+   i-replace ang lumang products.js.
+   ============================================================ */\n\n`;
+  const body = 'window.SITE_DATA = ' + JSON.stringify(D, null, 2) + ';\n';
+  const blob = new Blob([header+body], {type:'application/javascript'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'products.js';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+  toast('Na-download! Ilipat sa whitesands-provision folder, i-replace ang luma.');
+}
+
+function resetAll(){
+  if(!confirm('Ibabalik lahat sa orihinal. Mawawala ang lahat ng binago at litrato. Sigurado?')) return;
+  D = JSON.parse(JSON.stringify(DEFAULTS));
+  localStorage.removeItem(KEY);
+  bindFields(); renderFavs(); renderTabs(); renderProds(); updateBar();
+  document.getElementById('heroPhoto')._paint();
+  toast('Naibalik sa orihinal.');
+}
+
+let tt;
+function toast(m){
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('show');
+  clearTimeout(tt); tt = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+/* ---------- INIT ---------- */
+bindFields();
+attachPhoto(document.getElementById('heroPhoto'), ()=>D.hero, 1800);
+renderFavs();
+renderTabs();
+renderProds();
+updateBar();
+</script>
+</body>
+</html>

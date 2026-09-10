@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>White Sands Provision — Fine Wines & Rare Spirits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --wine:#6e1423;
+  --wine-dark:#4a0d18;
+  --wine-deep:#2b070e;
+  --gold:#b8933d;
+  --gold-light:#d9bc6f;
+  --ink:#1d1a17;
+  --ink-soft:#57504a;
+  --paper:#fdfcfa;
+  --paper-warm:#f7f3ec;
+  --line:#e6dfd4;
+  --serif:'Libre Caslon Text', Georgia, serif;
+  --sans:'Work Sans', 'Segoe UI', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+button{font-family:var(--sans);cursor:pointer}
+a{color:inherit}
+
+/* ============ AGE GATE ============ */
+.age-gate{position:fixed;inset:0;background:rgba(20,6,10,.96);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px}
+.age-gate.hidden{display:none}
+.age-card{background:var(--paper);max-width:480px;width:100%;padding:56px 48px;text-align:center;border-top:4px solid var(--gold)}
+.age-card .mark{font-family:var(--serif);font-size:.8rem;letter-spacing:.35em;color:var(--wine);text-transform:uppercase;margin-bottom:20px}
+.age-card h2{font-family:var(--serif);font-size:1.7rem;font-weight:400;margin-bottom:12px}
+.age-card p{color:var(--ink-soft);font-size:.92rem;margin-bottom:28px}
+.age-actions{display:flex;gap:12px;justify-content:center}
+.age-actions .yes{background:var(--wine);color:#fff;border:none;padding:14px 36px;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;font-weight:600;transition:background .3s}
+.age-actions .yes:hover{background:var(--wine-dark)}
+.age-actions .no{background:none;border:1px solid var(--line);padding:14px 36px;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;font-weight:600;color:var(--ink-soft)}
+
+/* ============ DEMO NOTICE ============ */
+.demobar{background:#3a3128;color:#f0e2c4;text-align:center;padding:7px 16px;font-size:.72rem;letter-spacing:.09em;border-bottom:1px solid rgba(217,188,111,.25)}
+.demobar b{color:var(--gold-light);font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+
+/* ============ ANNOUNCEMENT ============ */
+.announce{background:var(--wine-deep);color:#e9ddc8;text-align:center;padding:9px 16px;font-size:.78rem;letter-spacing:.08em}
+.announce b{color:var(--gold-light);font-weight:600}
+.announce a{color:var(--gold-light);text-decoration:underline;text-underline-offset:3px}
+
+/* ============ HEADER ============ */
+header{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:900}
+.header-main{display:flex;align-items:center;gap:32px;max-width:1440px;margin:0 auto;padding:18px 40px}
+.brand{text-decoration:none;flex-shrink:0}
+.brand .brand-top{font-family:var(--serif);font-size:1.45rem;letter-spacing:.14em;color:var(--wine);text-transform:uppercase;line-height:1.1}
+.brand .brand-sub{font-size:.62rem;letter-spacing:.52em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-top:2px}
+.search{flex:1;max-width:520px;position:relative}
+.search input{width:100%;border:1px solid var(--line);background:var(--paper-warm);padding:11px 44px 11px 18px;font-size:.9rem;font-family:var(--sans);border-radius:2px;outline:none;transition:border-color .3s}
+.search input:focus{border-color:var(--gold)}
+.search .s-ico{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--ink-soft);font-size:.95rem}
+.header-links{display:flex;align-items:center;gap:26px;margin-left:auto;flex-shrink:0}
+.header-links a{text-decoration:none;font-size:.82rem;font-weight:500;letter-spacing:.04em;color:var(--ink);display:flex;align-items:center;gap:7px;transition:color .25s}
+.header-links a:hover{color:var(--wine)}
+.cart-btn{position:relative;background:none;border:none;font-size:.82rem;font-weight:500;letter-spacing:.04em;display:flex;align-items:center;gap:7px;color:var(--ink)}
+.cart-count{background:var(--wine);color:#fff;font-size:.68rem;font-weight:700;min-width:19px;height:19px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+
+/* nav */
+.mainnav{border-top:1px solid var(--line)}
+.mainnav ul{display:flex;justify-content:center;gap:44px;list-style:none;max-width:1440px;margin:0 auto;padding:0 40px}
+.mainnav a{display:block;padding:13px 0;text-decoration:none;font-size:.8rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);border-bottom:2px solid transparent;transition:all .25s}
+.mainnav a:hover{color:var(--wine);border-bottom-color:var(--wine)}
+.mainnav a.hot{color:var(--wine)}
+
+/* ============ HERO ============ */
+.hero{position:relative;min-height:78vh;display:flex;align-items:center;overflow:hidden;background:var(--wine-deep)}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.hero-scrim{position:absolute;inset:0;background:linear-gradient(100deg,rgba(24,6,11,.92) 0%,rgba(24,6,11,.55) 55%,rgba(24,6,11,.25) 100%)}
+.hero-inner{position:relative;z-index:5;max-width:1440px;margin:0 auto;padding:90px 40px;width:100%}
+.hero-eyebrow{font-size:.75rem;letter-spacing:.42em;text-transform:uppercase;color:var(--gold-light);font-weight:600;margin-bottom:22px}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.4rem,4.6vw,4.2rem);line-height:1.12;color:#fdf9f0;max-width:14ch;margin-bottom:24px}
+.hero h1 em{font-style:italic;color:var(--gold-light)}
+.hero-sub{color:#e8dccb;font-size:1.05rem;max-width:52ch;margin-bottom:38px;font-weight:300}
+.hero-cta{display:flex;gap:16px;flex-wrap:wrap}
+.btn{display:inline-block;padding:15px 38px;font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;border:none;transition:all .3s;border-radius:1px}
+.btn-gold{background:var(--gold);color:var(--wine-deep)}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.35)}
+.btn-ghost{background:transparent;color:#f3ead9;border:1px solid rgba(233,221,200,.55)}
+.btn-ghost:hover{border-color:var(--gold-light);color:var(--gold-light)}
+.btn-wine{background:var(--wine);color:#fff}
+.btn-wine:hover{background:var(--wine-dark)}
+
+/* ============ SECTION SHARED ============ */
+section{padding:88px 40px}
+.wrap{max-width:1440px;margin:0 auto}
+.sec-head{text-align:center;margin-bottom:56px}
+.sec-eyebrow{font-size:.72rem;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px}
+.sec-title{font-family:var(--serif);font-weight:400;font-size:clamp(1.9rem,3vw,2.7rem);color:var(--ink)}
+.sec-title em{font-style:italic;color:var(--wine)}
+
+/* ============ FAVORITES CAROUSEL ============ */
+.favs{background:var(--paper-warm);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.fav-track{display:flex;gap:26px;overflow-x:auto;padding:8px 4px 24px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+.fav{flex:0 0 300px;scroll-snap-align:start;background:var(--paper);border:1px solid var(--line);transition:all .35s;cursor:pointer;display:flex;flex-direction:column}
+.fav:hover{transform:translateY(-6px);box-shadow:0 18px 44px rgba(43,7,14,.12)}
+.fav-img{height:200px;overflow:hidden;background:var(--paper-warm);position:relative}
+.fav-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.fav:hover .fav-img img{transform:scale(1.06)}
+.fav-num{position:absolute;top:0;left:0;background:var(--wine);color:#fff;font-family:var(--serif);font-size:1.1rem;width:42px;height:42px;display:flex;align-items:center;justify-content:center}
+.fav-body{padding:22px 24px 26px;display:flex;flex-direction:column;flex:1}
+.fav-quote{font-family:var(--serif);font-style:italic;font-size:1rem;line-height:1.5;color:var(--ink);margin-bottom:12px}
+.fav-name{font-size:.82rem;font-weight:600;letter-spacing:.03em;color:var(--ink-soft);margin-top:auto}
+
+/* ============ PRESS ============ */
+.press{padding:44px 40px;background:var(--paper);border-bottom:1px solid var(--line)}
+.press-row{display:flex;align-items:center;justify-content:center;gap:56px;flex-wrap:wrap;max-width:1200px;margin:0 auto}
+.press-label{font-size:.68rem;letter-spacing:.36em;text-transform:uppercase;color:var(--ink-soft);font-weight:700}
+.press-item{font-family:var(--serif);font-size:1.05rem;color:var(--ink-soft);letter-spacing:.06em;opacity:.75}
+.press-item b{display:block;font-family:var(--sans);font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:700;text-align:center;margin-top:3px}
+
+/* ============ SHOP TABS + PRODUCTS ============ */
+.tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:52px}
+.tab{background:none;border:1px solid var(--line);padding:11px 26px;font-size:.76rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);transition:all .25s;border-radius:1px}
+.tab:hover{border-color:var(--wine);color:var(--wine)}
+.tab.active{background:var(--wine);border-color:var(--wine);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:30px}
+.card{background:#fff;border:1px solid var(--line);display:flex;flex-direction:column;transition:all .35s;position:relative}
+.card:hover{box-shadow:0 22px 54px rgba(43,7,14,.13);transform:translateY(-5px)}
+.card-img{height:290px;overflow:hidden;background:linear-gradient(160deg,#f2ece1,#e7ddcc);position:relative}
+.card-img img{width:100%;height:100%;object-fit:cover;transition:transform .7s}
+.card:hover .card-img img{transform:scale(1.05)}
+.badge-pts{position:absolute;top:14px;left:14px;background:var(--wine-deep);color:var(--gold-light);font-size:.7rem;font-weight:700;letter-spacing:.08em;padding:7px 12px}
+.badge-deal{position:absolute;top:14px;right:14px;background:var(--gold);color:var(--wine-deep);font-size:.66rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:7px 12px}
+.card-body{padding:26px 26px 28px;display:flex;flex-direction:column;flex:1}
+.teaser{font-family:var(--serif);font-style:italic;font-size:1.04rem;line-height:1.45;color:var(--ink);margin-bottom:12px}
+.p-name{font-size:.88rem;font-weight:600;line-height:1.45;margin-bottom:4px}
+.p-region{font-size:.78rem;color:var(--ink-soft);letter-spacing:.05em;margin-bottom:18px}
+.price-row{display:flex;align-items:baseline;gap:10px;margin-bottom:18px;margin-top:auto}
+.price-was{color:#a39a8e;text-decoration:line-through;font-size:.88rem}
+.price-now{font-family:var(--serif);font-size:1.5rem;color:var(--wine)}
+.buy-row{display:flex;gap:10px}
+.qty{display:flex;align-items:center;border:1px solid var(--line)}
+.qty button{background:none;border:none;width:34px;height:44px;font-size:1rem;color:var(--ink-soft);transition:color .2s}
+.qty button:hover{color:var(--wine)}
+.qty span{min-width:26px;text-align:center;font-weight:600;font-size:.9rem}
+.add-btn{flex:1;background:var(--wine);color:#fff;border:none;font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;transition:background .3s;height:44px}
+.add-btn:hover{background:var(--wine-dark)}
+.add-btn.added{background:var(--gold);color:var(--wine-deep)}
+
+/* ============ RESTAURANT COLLAB ============ */
+.collab{position:relative;background:var(--wine-deep);color:#f2e9da;overflow:hidden}
+.collab-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28}
+.collab-inner{position:relative;z-index:2;max-width:1440px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:70px;align-items:center}
+.collab h2{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,3.4vw,3.1rem);line-height:1.18;margin-bottom:22px}
+.collab h2 em{font-style:italic;color:var(--gold-light)}
+.collab p{color:#dccfb9;font-weight:300;font-size:1rem;max-width:50ch;margin-bottom:34px}
+.collab-list{display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(233,221,200,.2)}
+.collab-item{display:flex;align-items:center;justify-content:space-between;padding:22px 6px;border-bottom:1px solid rgba(233,221,200,.2);text-decoration:none;transition:all .3s}
+.collab-item:hover{padding-left:16px;background:rgba(212,175,55,.06)}
+.collab-item .r-name{font-family:var(--serif);font-size:1.2rem;color:#f6efe2}
+.collab-item .r-tag{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-light);font-weight:600}
+
+/* ============ CLUBS ============ */
+.clubs{background:var(--paper-warm);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.club-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:30px;max-width:1240px;margin:0 auto}
+.club{background:#fff;border:1px solid var(--line);padding:52px 42px;text-align:center;position:relative;transition:all .35s;display:flex;flex-direction:column}
+.club:hover{transform:translateY(-6px);box-shadow:0 22px 54px rgba(43,7,14,.12)}
+.club.featured{border:2px solid var(--gold)}
+.club-flag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--wine-deep);font-size:.64rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:6px 18px;white-space:nowrap}
+.club-tier{font-size:.7rem;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px}
+.club h3{font-family:var(--serif);font-weight:400;font-size:1.65rem;margin-bottom:8px}
+.club-per{font-size:.8rem;color:var(--ink-soft);margin-bottom:24px}
+.club-price{font-family:var(--serif);font-size:2.6rem;color:var(--wine);margin-bottom:26px}
+.club-price small{font-size:.95rem;color:var(--ink-soft);font-family:var(--sans)}
+.club ul{list-style:none;text-align:left;margin-bottom:34px;flex:1}
+.club ul li{padding:9px 0;border-bottom:1px dashed var(--line);font-size:.88rem;color:var(--ink-soft);display:flex;gap:10px}
+.club ul li::before{content:'—';color:var(--gold);font-weight:700}
+
+/* ============ REFER ============ */
+.refer{background:linear-gradient(120deg,var(--wine) 0%,var(--wine-dark) 100%);color:#fdf6e9;text-align:center}
+.refer h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.8rem,3vw,2.6rem);max-width:26ch;margin:0 auto 18px}
+.refer h2 em{font-style:italic;color:var(--gold-light)}
+.refer p{color:#ecdcc4;max-width:58ch;margin:0 auto 34px;font-weight:300}
+.refer .amount{font-family:var(--serif);color:var(--gold-light)}
+
+/* ============ JOURNAL ============ */
+.journal-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px}
+.post{background:#fff;border:1px solid var(--line);text-decoration:none;transition:all .35s;display:flex;flex-direction:column}
+.post:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(43,7,14,.1)}
+.post-img{height:220px;overflow:hidden}
+.post-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.post:hover .post-img img{transform:scale(1.06)}
+.post-body{padding:28px}
+.post-cat{font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:12px}
+.post h3{font-family:var(--serif);font-weight:400;font-size:1.3rem;line-height:1.35;margin-bottom:10px;color:var(--ink)}
+.post p{font-size:.88rem;color:var(--ink-soft)}
+
+/* ============ NEWSLETTER ============ */
+.newsletter{background:var(--wine-deep);color:#f0e6d4;text-align:center}
+.newsletter h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.7rem,2.6vw,2.3rem);margin-bottom:14px}
+.newsletter p{color:#cbb99d;max-width:52ch;margin:0 auto 32px;font-weight:300;font-size:.95rem}
+.nl-form{display:flex;max-width:480px;margin:0 auto;gap:0}
+.nl-form input{flex:1;padding:16px 20px;border:1px solid rgba(212,175,55,.4);background:rgba(255,255,255,.06);color:#fff;font-family:var(--sans);font-size:.9rem;outline:none}
+.nl-form input::placeholder{color:#a08e73}
+.nl-form button{background:var(--gold);color:var(--wine-deep);border:none;padding:0 34px;font-size:.74rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;transition:background .3s}
+.nl-form button:hover{background:var(--gold-light)}
+
+/* ============ FOOTER ============ */
+footer{background:#171310;color:#b3a793;padding:72px 40px 36px}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:48px;max-width:1440px;margin:0 auto 56px}
+.foot-brand .brand-top{font-family:var(--serif);font-size:1.3rem;letter-spacing:.14em;color:var(--gold-light);text-transform:uppercase}
+.foot-brand .brand-sub{font-size:.6rem;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:4px 0 20px}
+.foot-brand p{font-size:.86rem;line-height:1.75;max-width:34ch}
+.foot-col h4{font-family:var(--sans);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:#e8dcc4;margin-bottom:20px;font-weight:700}
+.foot-col ul{list-style:none}
+.foot-col li{margin-bottom:11px}
+.foot-col a{text-decoration:none;font-size:.86rem;transition:color .25s}
+.foot-col a:hover{color:var(--gold-light)}
+.foot-bottom{border-top:1px solid #2c2620;padding-top:32px;text-align:center;font-size:.76rem;color:#786d5c;max-width:1440px;margin:0 auto}
+.foot-bottom .drink{margin-top:8px;letter-spacing:.14em;text-transform:uppercase;font-size:.66rem}
+
+/* ============ TOAST ============ */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--wine-deep);color:#f3ead9;padding:16px 26px;font-size:.86rem;letter-spacing:.03em;z-index:5000;border-left:3px solid var(--gold);box-shadow:0 16px 44px rgba(0,0,0,.3);transform:translateY(120px);opacity:0;transition:all .4s cubic-bezier(.2,.9,.3,1.2)}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ============ REVEAL ANIM ============ */
+.reveal{opacity:0;transform:translateY(28px);transition:all .8s cubic-bezier(.2,.65,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1000px){
+  .collab-inner{grid-template-columns:1fr;gap:44px}
+  .foot-grid{grid-template-columns:1fr 1fr}
+  .header-main{flex-wrap:wrap;gap:16px}
+  .search{order:3;max-width:100%;flex-basis:100%}
+}
+@media (max-width:640px){
+  section{padding:60px 20px}
+  .press{padding:32px 20px}
+  .hero-inner{padding:70px 20px}
+  .mainnav ul{gap:20px;overflow-x:auto;justify-content:flex-start;padding:0 20px}
+  .mainnav a{white-space:nowrap}
+  .header-main{padding:14px 20px}
+  .header-links{gap:16px}
+  .nl-form{flex-direction:column;gap:10px}
+  .nl-form button{padding:15px}
+  .foot-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- AGE GATE -->
+<div class="age-gate" id="ageGate">
+  <div class="age-card">
+    <div class="mark">White Sands Provision</div>
+    <h2>Welcome. Are you of legal drinking age?</h2>
+    <p>You must be 18 years or older to enter this site. Please enjoy our selections responsibly.</p>
+    <div class="age-actions">
+      <button class="yes" onclick="document.getElementById('ageGate').classList.add('hidden')">Yes, I am 18+</button>
+      <button class="no" onclick="alert('You must be of legal drinking age to enter.')">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO NOTICE -->
+<div class="demobar"><b>Preview</b> &nbsp;·&nbsp; Design prototype. Bottles, prices, and ratings shown are samples — not real listings.</div>
+
+<!-- ANNOUNCEMENT -->
+<div class="announce">Complimentary delivery on orders over <b>₱8,000</b> within Metro Manila &nbsp;·&nbsp; <a href="#refer">Refer a friend, earn ₱2,500 credit</a></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-main">
+    <a class="brand" href="#">
+      <div class="brand-top">White Sands</div>
+      <div class="brand-sub">Provision</div>
+    </a>
+    <div class="search">
+      <input type="search" placeholder="Search wines, spirits, regions…">
+      <span class="s-ico">⌕</span>
+    </div>
+    <div class="header-links">
+      <a href="#">Sign In</a>
+      <button class="cart-btn" id="cartBtn">Cart <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </div>
+  <nav class="mainnav">
+    <ul>
+      <li><a href="#shop">Shop</a></li>
+      <li><a href="#collections">Collections</a></li>
+      <li><a href="#shop" class="hot">Limited Offers</a></li>
+      <li><a href="#clubs">Exclusive Clubs</a></li>
+      <li><a href="#collab">Restaurant Series</a></li>
+      <li><a href="#journal">The Journal</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" style="padding:0">
+  <img class="hero-img" src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=1800&q=80" alt="Cellar of fine wines" onerror="this.remove()">
+  <div class="hero-scrim"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Never Drink an Ordinary Bottle Again</div>
+    <h1>The world's greatest cellars, <em>opened for you</em></h1>
+    <p class="hero-sub">Our tasting panel travels the great estates of Bordeaux, Burgundy, Speyside, and beyond — securing allocations that rarely leave the cellar door. Every bottle vetted. Every story told.</p>
+    <div class="hero-cta">
+      <a href="#shop" class="btn btn-gold">Shop This Week's Release</a>
+      <a href="#clubs" class="btn btn-ghost">Find Your Club</a>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBER FAVORITES -->
+<section class="favs">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Curated Weekly</div>
+      <h2 class="sec-title">This Week's <em>Member Favorites</em></h2>
+    </div>
+    <div class="fav-track" id="favTrack">
+      <div class="fav reveal"><div class="fav-img"><div class="fav-num">1</div><img src="https://loremflickr.com/600/400/wine,bottle?lock=11" alt="Reserve Cabernet" loading="lazy" onerror="this.remove()"></div><div class="fav-body"><div class="fav-quote">"The finest Cabernet to pass our table this year — members cleared half the allocation in a day"</div><div class="fav-name">2021 Sandoval Reserve Cabernet · Napa Valley</div></div></div>
+      <div class="fav reveal"><div class="fav-img"><div class="fav-num">2</div><img src="https://loremflickr.com/600/400/whiskey,glass?lock=12" alt="Single malt" loading="lazy" onerror="this.remove()"></div><div class="fav-body"><div class="fav-quote">"A 21-year Speyside sleeper our spirits buyer refuses to describe — taste it blind"</div><div class="fav-name">Glen Marloch 21 Year · Speyside, Scotland</div></div></div>
+      <div class="fav reveal"><div class="fav-img"><div class="fav-num">3</div><img src="https://loremflickr.com/600/400/vineyard?lock=13" alt="Burgundy vineyard" loading="lazy" onerror="this.remove()"></div><div class="fav-body"><div class="fav-quote">"Stunning value from the birthplace of Chardonnay — buy it by the case"</div><div class="fav-name">2023 Domaine Céline Mâcon-Villages · Burgundy</div></div></div>
+      <div class="fav reveal"><div class="fav-img"><div class="fav-num">4</div><img src="https://loremflickr.com/600/400/wine,red?lock=14" alt="Amarone style red" loading="lazy" onerror="this.remove()"></div><div class="fav-body"><div class="fav-quote">"Our 'baby Amarone' — the bold Veneto red members reorder by the caseload"</div><div class="fav-name">2022 Passione Rosso Appassimento · Veneto</div></div></div>
+      <div class="fav reveal"><div class="fav-img"><div class="fav-num">5</div><img src="https://loremflickr.com/600/400/champagne?lock=15" alt="Grower champagne" loading="lazy" onerror="this.remove()"></div><div class="fav-body"><div class="fav-quote">"The grower Champagne sleeper found on a two-star Michelin list"</div><div class="fav-name">NV Maison Verlaine Extra-Brut · Champagne</div></div></div>
+      <div class="fav reveal"><div class="fav-img"><div class="fav-num">6</div><img src="https://loremflickr.com/600/400/wine,cellar?lock=16" alt="Rare Pinot" loading="lazy" onerror="this.remove()"></div><div class="fav-body"><div class="fav-quote">"A winemaker's personal Pinot from the best vintage on record — quietly allocated to us"</div><div class="fav-name">2021 Alto Piedra Pinot Noir · Willamette Valley</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESS -->
+<div class="press">
+  <div class="press-row">
+    <span class="press-label">As Featured In</span>
+    <span class="press-item">The Manila Epicure <b>Best Wine Source 2025</b></span>
+    <span class="press-item">Palate & Cellar <b>Top Curator, Asia</b></span>
+    <span class="press-item">The Spirits Review <b>Rare Finds Award</b></span>
+  </div>
+</div>
+
+<!-- SHOP -->
+<section id="shop">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Shop Collections</div>
+      <h2 class="sec-title">Vetted by our panel. <em>Priced for members.</em></h2>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="popular">Most Popular</button>
+      <button class="tab" data-tab="offers">Limited Time Offers</button>
+      <button class="tab" data-tab="expert">Expert Picks</button>
+      <button class="tab" data-tab="last">Last Chance</button>
+    </div>
+    <div class="grid" id="productGrid"></div>
+  </div>
+</section>
+
+<!-- RESTAURANT COLLAB -->
+<section class="collab" id="collab">
+  <img class="collab-bg" src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1800&q=80" alt="Fine dining room" onerror="this.remove()">
+  <div class="collab-inner">
+    <div>
+      <div class="sec-eyebrow" style="color:var(--gold-light)">The Restaurant Series</div>
+      <h2>Collaborations with <em>award-winning kitchens</em></h2>
+      <p>We partner with the sommeliers of the country's most celebrated dining rooms to bottle the pairings they pour by the glass — exclusive cuvées you can only find here or at their tables.</p>
+      <a href="#shop" class="btn btn-gold">Shop by Restaurant</a>
+    </div>
+    <div class="collab-list">
+      <a href="#" class="collab-item"><span class="r-name">The Pangolin</span><span class="r-tag">Cocktail Cellar</span></a>
+      <a href="#" class="collab-item"><span class="r-name">XX Curry</span><span class="r-tag">Spice Pairings</span></a>
+      <a href="#" class="collab-item"><span class="r-name">Uncle Yin's</span><span class="r-tag">Baijiu & Tea Blends</span></a>
+      <a href="#" class="collab-item"><span class="r-name">Sum Wine</span><span class="r-tag">House Selection</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CLUBS -->
+<section class="clubs" id="clubs">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">Membership</div>
+      <h2 class="sec-title">Find <em>your</em> club</h2>
+    </div>
+    <div class="club-grid">
+      <div class="club reveal">
+        <div class="club-tier">Tier One</div>
+        <h3>The Cellar Door</h3>
+        <div class="club-per">4 bottles, delivered monthly</div>
+        <div class="club-price">₱5,900<small>/mo</small></div>
+        <ul>
+          <li>Panel-selected wines from 3 continents</li>
+          <li>Full tasting notes & pairing cards</li>
+          <li>Member pricing storewide (–10%)</li>
+          <li>Skip or swap any month</li>
+        </ul>
+        <a href="#" class="btn btn-wine">Join The Cellar Door</a>
+      </div>
+      <div class="club featured reveal">
+        <div class="club-flag">Most Popular</div>
+        <div class="club-tier">Tier Two</div>
+        <h3>The Collector</h3>
+        <div class="club-per">6 bottles + 1 rare allocation monthly</div>
+        <div class="club-price">₱12,500<small>/mo</small></div>
+        <ul>
+          <li>Everything in The Cellar Door</li>
+          <li>One allocated rarity each month</li>
+          <li>Priority access to new releases</li>
+          <li>Invitations to private tastings</li>
+          <li>Member pricing storewide (–15%)</li>
+        </ul>
+        <a href="#" class="btn btn-gold">Join The Collector</a>
+      </div>
+      <div class="club reveal">
+        <div class="club-tier">Tier Three</div>
+        <h3>The Vault</h3>
+        <div class="club-per">12 bottles + concierge, monthly</div>
+        <div class="club-price">₱28,000<small>/mo</small></div>
+        <ul>
+          <li>Everything in The Collector</li>
+          <li>Personal sommelier consultation</li>
+          <li>Cellar-building & provenance service</li>
+          <li>First call on vault-only vintages</li>
+          <li>Member pricing storewide (–20%)</li>
+        </ul>
+        <a href="#" class="btn btn-wine">Join The Vault</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFER -->
+<section class="refer" id="refer">
+  <h2>Invite your closest connoisseurs — <em>you both win</em></h2>
+  <p>Grant a friend access to the cellar and they'll take <span class="amount">₱2,500 off</span> their first order of ₱7,500 or more. You'll pocket a <span class="amount">₱2,500 credit</span> yourself. This one's too good not to share.</p>
+  <a href="#" class="btn btn-gold">Refer a Friend</a>
+</section>
+
+<!-- JOURNAL -->
+<section id="journal">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-eyebrow">The Journal</div>
+      <h2 class="sec-title">Stories from <em>the cellar</em></h2>
+    </div>
+    <div class="journal-grid">
+      <a href="#" class="post reveal">
+        <div class="post-img"><img src="https://loremflickr.com/700/440/vineyard,grapes?lock=21" alt="Vineyard at harvest" loading="lazy" onerror="this.remove()"></div>
+        <div class="post-body">
+          <div class="post-cat">Regions</div>
+          <h3>Why Burgundy's smallest plots make its greatest wines</h3>
+          <p>A walk through the climats with the growers who farm rows their families have tended for centuries.</p>
+        </div>
+      </a>
+      <a href="#" class="post reveal">
+        <div class="post-img"><img src="https://loremflickr.com/700/440/whiskey,barrel?lock=22" alt="Whisky casks" loading="lazy" onerror="this.remove()"></div>
+        <div class="post-body">
+          <div class="post-cat">Spirits</div>
+          <h3>Reading a cask: how age statements actually work</h3>
+          <p>Our spirits buyer explains what 21 years in oak really does — and when younger is better.</p>
+        </div>
+      </a>
+      <a href="#" class="post reveal">
+        <div class="post-img"><img src="https://loremflickr.com/700/440/dinner,table?lock=23" alt="Table setting" loading="lazy" onerror="this.remove()"></div>
+        <div class="post-body">
+          <div class="post-cat">Pairing</div>
+          <h3>The one rule of pairing our sommeliers never break</h3>
+          <p>Forget red-with-meat. The real principle is simpler, and it will change how you order.</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter">
+  <h2>First call on every release</h2>
+  <p>Allocations are small and members come first. Join the list to see each week's release before it sells through.</p>
+  <form class="nl-form" id="nlForm">
+    <input type="email" placeholder="Your email address" required>
+    <button type="submit">Join</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-brand">
+      <div class="brand-top">White Sands</div>
+      <div class="brand-sub">Provision</div>
+      <p>Fine wines and rare spirits, vetted bottle by bottle by our tasting panel and delivered with provenance you can trust.</p>
+    </div>
+    <div class="foot-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#shop">All Wines</a></li>
+        <li><a href="#shop">Spirits</a></li>
+        <li><a href="#shop">Limited Offers</a></li>
+        <li><a href="#collab">Restaurant Series</a></li>
+        <li><a href="#">Gifting</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Membership</h4>
+      <ul>
+        <li><a href="#clubs">The Cellar Door</a></li>
+        <li><a href="#clubs">The Collector</a></li>
+        <li><a href="#clubs">The Vault</a></li>
+        <li><a href="#refer">Refer a Friend</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Learn</h4>
+      <ul>
+        <li><a href="#journal">The Journal</a></li>
+        <li><a href="#">Tasting Notes</a></li>
+        <li><a href="#">Our Experts</a></li>
+        <li><a href="#">Provenance Promise</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Delivery & Storage</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <p>© 2026 White Sands Provision · A White Sands Hospitality Company · Boracay, Philippines</p>
+    <p class="drink">Drink responsibly. Not for sale to persons below 18 years of age.</p>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="products.js"></script>
+<script>
+/* ---------- CONTENT (from products.js — edit via admin.html) ---------- */
+const DATA = window.SITE_DATA || {};
+const PRODUCTS = DATA.products || {
+  popular: [
+    {teaser:'"One of the best we\'ve ever poured at a panel tasting"', pts:96, name:'2021 Sandoval Reserve Cabernet Sauvignon', region:'Napa Valley, USA', was:4800, now:2950, img:'wine,red,bottle', lock:31},
+    {teaser:'Stunning value from the birthplace of Chardonnay', pts:null, name:'2023 Domaine Céline Mâcon-Villages', region:'Burgundy, France', was:null, now:1150, img:'wine,white', lock:32},
+    {teaser:'"Baby Amarone" our members buy by the caseload', pts:97, name:'2022 Passione Rosso Appassimento', region:'Veneto, Italy', was:null, now:990, img:'wine,italian', lock:33},
+    {teaser:'Estate-grown Sauvignon Blanc that massively overdelivers', pts:null, name:'2024 Mount Aroha Sauvignon Blanc Sur Lie', region:'Marlborough, New Zealand', was:null, now:1090, img:'wine,glass', lock:34},
+    {teaser:'The alpine Italian white that earns a cult following', pts:93, name:'2023 Cascata Erbaluce di Caluso', region:'Piedmont, Italy', was:null, now:1490, img:'wine,vineyard', lock:35},
+    {teaser:'Our #1 Côtes-du-Rhône, from a 100-point southern estate', pts:null, name:'2023 Clos Saint-Rémy Côtes-du-Rhône', region:'Rhône Valley, France', was:1350, now:1190, img:'wine,cellar', lock:36},
+    {teaser:'Gorgeous ripeness with vibrating acidity — pure terroir', pts:null, name:'NV Villa Corazza Prosecco Extra Dry', region:'Treviso, Italy', was:null, now:1050, img:'champagne,sparkling', lock:37},
+    {teaser:'Sensational Provence rosé from one of the finest palates in the trade', pts:null, name:'2024 Maison Azur Coteaux d\'Aix-en-Provence', region:'Provence, France', was:null, now:1190, img:'wine,rose', lock:38},
+  ],
+  offers: [
+    {teaser:'"One of the best ever from our Napa allocations" — 59% off', pts:null, name:'2022 1888 Estate Cabernet Sauvignon', region:'Napa Valley, USA', was:5200, now:2150, img:'wine,bottle,dark', lock:41},
+    {teaser:'A star Super Tuscan value from a great vintage', pts:94, name:'2021 Tenuta del Sasso Toscana Rosso', region:'Tuscany, Italy', was:1400, now:1090, img:'wine,tuscany', lock:42},
+    {teaser:'"Never disappoints" — old-vine Pinot from a landmark vineyard', pts:93, name:'2022 Hillcrest Old Vine Pinot Noir', region:'Willamette Valley, USA', was:2900, now:1750, img:'wine,pinot', lock:43},
+    {teaser:'The Champagne sleeper found on a two-Michelin-star list', pts:null, name:'NV Maison Verlaine Réserve Extra-Brut', region:'Champagne, France', was:3900, now:3300, img:'champagne,celebration', lock:44},
+    {teaser:'Small-batch reposado at an introductory price', pts:null, name:'Cielo Alto Reposado Tequila', region:'Jalisco, Mexico', was:3200, now:2450, img:'tequila,agave', lock:45},
+    {teaser:'Wine Panel: "one of the best values around"', pts:96, name:'2023 Altavista Concreto Malbec', region:'Mendoza, Argentina', was:2400, now:2100, img:'wine,malbec', lock:46},
+  ],
+  expert: [
+    {teaser:'Our spirits director\'s desert-island dram', pts:95, name:'Glen Marloch 21 Year Single Malt', region:'Speyside, Scotland', was:null, now:14500, img:'whiskey,single,malt', lock:51},
+    {teaser:'"Elevates the appellation into the stratosphere"', pts:99, name:'2016 Château Belrose Grand Vin', region:'Margaux, France', was:null, now:28500, img:'wine,chateau', lock:52},
+    {teaser:'One of the world\'s rarest Burgundies — three bottles remain', pts:null, name:'2020 Domaine Perrault Corton Grand Cru', region:'Burgundy, France', was:null, now:64000, img:'wine,burgundy', lock:53},
+    {teaser:'Precise, high-altitude Cab Franc from a visionary grower', pts:94, name:'2023 Piedra Alta Cabernet Franc', region:'Uco Valley, Argentina', was:null, now:1990, img:'wine,mountain', lock:54},
+    {teaser:'A sweet wine that stands with the greatest Sauternes', pts:96, name:'2015 Klein Valley Vin de Réserve (500mL)', region:'Constantia, South Africa', was:null, now:7500, img:'wine,dessert', lock:55},
+    {teaser:'A 40-year blend our cognac buyer calls "liquid heritage"', pts:null, name:'Maison Delacroix XO Grande Champagne', region:'Cognac, France', was:null, now:24500, img:'cognac,brandy', lock:56},
+  ],
+  last: [
+    {teaser:'Final cases of a member favorite — gone this week', pts:null, name:'2022 Bahía Blanca Albariño', region:'Rías Baixas, Spain', was:1400, now:950, img:'wine,spanish', lock:61},
+    {teaser:'Last allocation of the cult island single malt', pts:95, name:'Cladach 18 Year Island Single Malt', region:'Islay, Scotland', was:12800, now:9900, img:'whiskey,scotland', lock:62},
+    {teaser:'The house pour at Sum Wine — final drop', pts:null, name:'2023 Sum Wine House Red Blend', region:'Barossa Valley, Australia', was:1600, now:1150, img:'wine,pour', lock:63},
+    {teaser:'Aged Caribbean rum, one barrel left in the vault', pts:null, name:'Marea Negra 15 Year Solera Rum', region:'Dominican Republic', was:5400, now:4200, img:'rum,barrel', lock:64},
+  ]
+};
+
+const peso = n => '₱' + n.toLocaleString('en-PH');
+
+/* ---------- RENDER ---------- */
+const grid = document.getElementById('productGrid');
+let cart = 0;
+
+function render(tab){
+  grid.innerHTML = PRODUCTS[tab].map((p,i)=>`
+    <div class="card reveal in" style="transition-delay:${i*60}ms">
+      <div class="card-img">
+        <img src="${p.photo ? p.photo : `https://loremflickr.com/600/580/${p.img}?lock=${p.lock}`}" alt="${p.name}" loading="lazy" onerror="this.remove()">
+        ${p.pts?`<span class="badge-pts">${p.pts} Points</span>`:''}
+        ${p.was?`<span class="badge-deal">Save ${Math.round((1-p.now/p.was)*100)}%</span>`:''}
+      </div>
+      <div class="card-body">
+        <div class="teaser">${p.teaser}</div>
+        <div class="p-name">${p.name}</div>
+        <div class="p-region">${p.region}</div>
+        <div class="price-row">
+          ${p.was?`<span class="price-was">${peso(p.was)}</span>`:''}
+          <span class="price-now">${peso(p.now)}</span>
+        </div>
+        <div class="buy-row">
+          <div class="qty">
+            <button onclick="chg(this,-1)" aria-label="Decrease">−</button>
+            <span>1</span>
+            <button onclick="chg(this,1)" aria-label="Increase">+</button>
+          </div>
+          <button class="add-btn" onclick="addCart(this,'${p.name.replace(/'/g,"\\'")}')">Add to Cart</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function chg(btn,d){
+  const span = btn.parentElement.querySelector('span');
+  span.textContent = Math.max(1, parseInt(span.textContent)+d);
+}
+
+function addCart(btn,name){
+  const qty = parseInt(btn.parentElement.querySelector('.qty span').textContent);
+  cart += qty;
+  document.getElementById('cartCount').textContent = cart;
+  btn.classList.add('added'); btn.textContent='✓ Added';
+  showToast(`${qty} × ${name} added to your cart`);
+  setTimeout(()=>{btn.classList.remove('added');btn.textContent='Add to Cart';},1800);
+}
+
+/* ---------- TABS ---------- */
+document.getElementById('tabs').addEventListener('click', e=>{
+  if(!e.target.classList.contains('tab')) return;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  e.target.classList.add('active');
+  render(e.target.dataset.tab);
+});
+
+/* ---------- TOAST ---------- */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+/* ---------- NEWSLETTER ---------- */
+document.getElementById('nlForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  showToast('Welcome to the list — first release lands in your inbox Friday.');
+  e.target.reset();
+});
+
+/* ---------- REVEAL ON SCROLL ---------- */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- APPLY EDITABLE CONTENT ---------- */
+const imgSrc = (o, w, h) => o.photo ? o.photo
+  : `https://loremflickr.com/${w}/${h}/${o.img || 'wine'}?lock=${o.lock || 1}`;
+
+function applyContent(){
+  // announcement bar
+  if(DATA.announce){
+    const bar = document.querySelector('.announce');
+    if(bar) bar.innerHTML = `${DATA.announce.text} &nbsp;·&nbsp; <a href="#refer">${DATA.announce.linkText}</a>`;
+  }
+  // hero
+  if(DATA.hero){
+    const h = DATA.hero;
+    const eb = document.querySelector('.hero-eyebrow');
+    const ti = document.querySelector('.hero h1');
+    const su = document.querySelector('.hero-sub');
+    const im = document.querySelector('.hero-img');
+    if(eb) eb.textContent = h.eyebrow;
+    if(ti) ti.innerHTML = `${h.title} <em>${h.titleEm}</em>`;
+    if(su) su.textContent = h.sub;
+    if(im) im.src = h.photo || im.src;
+  }
+  // member favorites
+  const track = document.getElementById('favTrack');
+  if(track && DATA.favorites){
+    track.innerHTML = DATA.favorites.map((f,i)=>`
+      <div class="fav reveal in">
+        <div class="fav-img">
+          <div class="fav-num">${i+1}</div>
+          <img src="${imgSrc(f,600,400)}" alt="${f.name}" loading="lazy" onerror="this.remove()">
+        </div>
+        <div class="fav-body">
+          <div class="fav-quote">${f.quote}</div>
+          <div class="fav-name">${f.name}</div>
+        </div>
+      </div>`).join('');
+  }
+}
+
+/* ---------- INIT ---------- */
+applyContent();
+render('popular');
+</script>
+</body>
+</html>
